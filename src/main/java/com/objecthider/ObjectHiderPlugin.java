@@ -207,6 +207,8 @@ public class ObjectHiderPlugin extends Plugin {
 	 * Note that, as a safeguard, Ground Objects that are intractable will not
 	 * be hidden. The return value will be false in that case.
 	 *
+	 * Certain disallowed objects are also prevented.
+	 *
 	 * @param tile - the Tile to remove from
 	 * @param obj - the Ground Object to remove
 	 * @return whether the operation was successful
@@ -216,10 +218,17 @@ public class ObjectHiderPlugin extends Plugin {
 		if (tile == null || obj == null) {
 			return false;
 		}
-		final ObjectComposition oc = client.getObjectDefinition(obj.getId());
+                final int[] disallowedObjIds = {41750, 41751, 41752, 41753};  // TOB
+		int objId = obj.getId();
+                if (Arrays.stream(disallowedObjIds).anyMatch(v -> v == objId)) {
+			log.debug("hiding of a disallowed Ground Object was prevented ({})", objId);
+			return false;
+		}
+		
+		final ObjectComposition oc = client.getObjectDefinition(objId);
 		if (oc != null) {
 			if (Arrays.stream(oc.getActions()).anyMatch(a -> a != null && !a.equals("Examine"))) {
-				log.debug("hiding of an intractable Ground Object was prevented ({})", obj.getId());
+				log.debug("hiding of an intractable Ground Object was prevented ({})", objId);
 				return false;
 			}
 		}
