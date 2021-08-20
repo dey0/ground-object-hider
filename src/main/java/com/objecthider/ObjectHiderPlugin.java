@@ -218,9 +218,9 @@ public class ObjectHiderPlugin extends Plugin {
 		if (tile == null || obj == null) {
 			return false;
 		}
-                final int[] disallowedObjIds = {41750, 41751, 41752, 41753};  // TOB
+		final int[] disallowedObjIds = {41750, 41751, 41752, 41753};  // TOB
 		int objId = obj.getId();
-                if (Arrays.stream(disallowedObjIds).anyMatch(v -> v == objId)) {
+		if (Arrays.stream(disallowedObjIds).anyMatch(v -> v == objId)) {
 			log.debug("hiding of a disallowed Ground Object was prevented ({})", objId);
 			return false;
 		}
