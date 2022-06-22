@@ -1,5 +1,7 @@
 # RuneLite Ground Object Hider Plugin
-This plugin intends to improve performance on low-end devices, as well as removing visual distractions from the game.
+This plugin was originally written by [Leo288](https://github.com/Leo288).
+It intends to improve performance on low-end devices, as well as removing visual distractions from the game.
+
 
 ## Using the Ground Object Hider
 Download the plugin from the RuneLite Plugin Hub.
