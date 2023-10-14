@@ -171,19 +171,21 @@ public class ObjectHiderPlugin extends Plugin {
     final Scene scene = client.getScene();
     final Tile[][][] tiles = scene.getTiles();
     // for each tile:
-    for (int plane = 0; plane < tiles.length; plane++) {
-      for (int x = 0; x < tiles[plane].length; x++) {
-        for (int y = 0; y < tiles[plane][x].length; y++) {
-          // if it is null, go to next one:
-          if (tiles[plane][x][y] == null) {
-            continue;
-          }
-          final WorldPoint location = tiles[plane][x][y].getWorldLocation();
-          // if we have hidden a Ground Object on that tile, restore it:
-          if (this.hiddenObjects.containsKey(location)) {
-            tiles[plane][x][y].setGroundObject(this.hiddenObjects.get(location));
-            // and make sure to sync the list:
-            this.hiddenObjects.remove(location);
+    if (tiles != null) {
+      for (int plane = 0; plane < tiles.length; plane++) {
+        for (int x = 0; x < tiles[plane].length; x++) {
+          for (int y = 0; y < tiles[plane][x].length; y++) {
+            // if it is null, go to next one:
+            if (tiles[plane][x][y] == null) {
+              continue;
+            }
+            final WorldPoint location = tiles[plane][x][y].getWorldLocation();
+            // if we have hidden a Ground Object on that tile, restore it:
+            if (this.hiddenObjects.containsKey(location)) {
+              tiles[plane][x][y].setGroundObject(this.hiddenObjects.get(location));
+              // and make sure to sync the list:
+              this.hiddenObjects.remove(location);
+            }
           }
         }
       }
@@ -237,34 +239,36 @@ public class ObjectHiderPlugin extends Plugin {
     final Scene scene = client.getScene();
     final Tile[][][] tiles = scene.getTiles();
 
-    for (int plane = 0; plane < tiles.length; plane++) {
-      for (int x = 0; x < tiles[plane].length; x++) {
-        for (int y = 0; y < tiles[plane][x].length; y++) {
-          final Tile currentTile = tiles[plane][x][y];
-          if (currentTile == null) {
-            continue;
-          }
-          // look for a matching Ground Object on that tile:
-          final GroundObject groundObj = currentTile.getGroundObject();
-          if (groundObj == null) {
-            // have we hidden something that shouldn't be hidden any more?
-            // look through `this.hiddenObjects` for this tile, and potentially restore:
-            if (this.hiddenObjects.containsKey(currentTile.getWorldLocation())) {
-              GroundObject oHidden = this.hiddenObjects.get(currentTile.getWorldLocation());
-              if (!getGroundObjects().contains(oHidden.getId())) {
-                currentTile.setGroundObject(oHidden);
-                this.hiddenObjects.remove(currentTile.getWorldLocation());
-              }
+    if (tiles != null) {
+      for (int plane = 0; plane < tiles.length; plane++) {
+        for (int x = 0; x < tiles[plane].length; x++) {
+          for (int y = 0; y < tiles[plane][x].length; y++) {
+            final Tile currentTile = tiles[plane][x][y];
+            if (currentTile == null) {
+              continue;
             }
-            continue;
-          }
-          if (config.getHideAll()) {
-            hideGroundObjectOnTile(currentTile, currentTile.getGroundObject());
-          } else {
-            // tile has a ground object, so maybe add it to the hide list
-            for (Integer hideObjID : getGroundObjects()) {
-              if (groundObj.getId() == hideObjID) {
-                hideGroundObjectOnTile(currentTile, groundObj);
+            // look for a matching Ground Object on that tile:
+            final GroundObject groundObj = currentTile.getGroundObject();
+            if (groundObj == null) {
+              // have we hidden something that shouldn't be hidden any more?
+              // look through `this.hiddenObjects` for this tile, and potentially restore:
+              if (this.hiddenObjects.containsKey(currentTile.getWorldLocation())) {
+                GroundObject oHidden = this.hiddenObjects.get(currentTile.getWorldLocation());
+                if (!getGroundObjects().contains(oHidden.getId())) {
+                  currentTile.setGroundObject(oHidden);
+                  this.hiddenObjects.remove(currentTile.getWorldLocation());
+                }
+              }
+              continue;
+            }
+            if (config.getHideAll()) {
+              hideGroundObjectOnTile(currentTile, currentTile.getGroundObject());
+            } else {
+              // tile has a ground object, so maybe add it to the hide list
+              for (Integer hideObjID : getGroundObjects()) {
+                if (groundObj.getId() == hideObjID) {
+                  hideGroundObjectOnTile(currentTile, groundObj);
+                }
               }
             }
           }
